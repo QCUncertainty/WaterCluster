@@ -1,0 +1,5 @@
+3
+model water molecule, O at the origin
+O    0.000   0.000  0.0
+H   -0.577  -0.817  0.0
+H   -0.577   0.817  0.0
