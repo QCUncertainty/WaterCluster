@@ -1,21 +1,27 @@
 #!/usr/bin/python3
 
-# python script to batch run MBE calculations with Psi4
-# The input is a stacked xyz file of different water cluster
-# geometries.
-# Psi4 must be installed.
-# Usage: Simply modify the setting lines below and run the script.
-#        The MBE results are summarized in the output file.
-
 import numpy as np
 import subprocess
 import os
+import datetime
+import glob
 
 DFT_METHOD = 'b3lyp'
 BASIS = '6-31G*'
 
-N = 5 # no. of monomers in the cluster, N <= 25 at this time
-GEOM_FILE = 'W'+str(N)+'_geoms_all.xyz'
+N = 3 # no. of monomers in the cluster, N <= 25 at this time
+#GEOM_FILE = 'W'+str(N)+'_geoms_all.xyz'
+GEOM_FILE = '3random_waters-100.xyz'
+#GEOM_FILE = 'W3_subgeoms_from_4_5.xyz'
+#GEOM_FILE = 'W3-test.xyz'
+NAME_DECOR = "_random_"
+#NAME_DECOR = "_sub3f_4_5" # "-" is not allowed in Psi4 calculations
+#NAME_DECOR = "_test_"
+#NO_CLUSTERS = "230"
+NO_CLUSTERS = "100"
+DELETE_SCRATCH = True # if false keeping the scratch files for debugging purpose
+TIME_FILE = "calc_timer.txt" # record the calculation time
+
 GREEK_NUMBER_PREFIX = {
         1:'momo',
         2:'di',
@@ -44,7 +50,7 @@ GREEK_NUMBER_PREFIX = {
         25:'icosipenta'
         }
 
-CLUSTER_NAME = GREEK_NUMBER_PREFIX[N]+'mer'
+CLUSTER_NAME = GREEK_NUMBER_PREFIX[N]+'mer'+NAME_DECOR+NO_CLUSTERS
 
 DISPERSION_CORRECTION = 'd3' # options = 'nodc' or 'd3' at this time, should have 'd4'
 DC = '' if (DISPERSION_CORRECTION == 'nodc') else '-'+DISPERSION_CORRECTION
@@ -54,6 +60,8 @@ MAX_NBODY = np.minimum(N,4)
 
 # read all geoms in and store them into an array
 # one geom into one row
+
+#geom = [[]] 
 
 label = [] # labels of the geoms
 
@@ -65,6 +73,8 @@ geom_blank = [" "]*row_length
 geom = [geom_blank]
 
 j = 0
+
+begin_time = datetime.datetime.now()
 
 with open(GEOM_FILE,'r') as Inp:
     for line in Inp:
@@ -87,10 +97,10 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
     MBEOut.write("Calculation settings: {} {} {} {}\n".format(DFT_METHOD,BASIS,DISPERSION_CORRECTION,BSSE_TYPE))
     MBEOut.write("Results are listed as columns of Total Energy, Interaction Energy and N-body contribution at different expansion orders in Eh.\n\n")
     for ii in range(len(label)):
-        with open('tmp-psi4.in', 'w') as PsiInp:
+        with open('tmp-psi4-'+str(ii)+'.in', 'w') as PsiInp:
             PsiInp.write("molecule {} {{\n".format(CLUSTER_NAME))
             for j in range(0,row_length,4):
-                PsiInp.write("{} {} {} {}\n".format(geom[i,j],geom[i,j+1],geom[i,j+2],geom[i,j+3]))
+                PsiInp.write("{} {} {} {}\n".format(geom[ii,j],geom[ii,j+1],geom[ii,j+2],geom[ii,j+3]))
                 if ((j+4)%12 == 0 and ((j+4) < row_length)):
                     PsiInp.write("--\n")
             PsiInp.write("}\n")
@@ -103,11 +113,11 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
             PsiInp.write("\n")
             PsiInp.write("ecp[label] = energy(\'{}\', bsse_type = \'{}\', max_nbody = {})\n".format(DFT_METHOD+DC, BSSE_TYPE, MAX_NBODY))
     
-        subprocess.run(["psi4", 'tmp-psi4.in', 'tmp-psi4.out']) # run the Psi4 MBE calculation
+        subprocess.run(["psi4", 'tmp-psi4-'+str(ii)+'.in', 'tmp-psi4-'+str(ii)+'.out']) # run the Psi4 MBE calculation
 
         MBEOut.write("{}\n".format(label[ii]))
 
-        with open('tmp-psi4.out', 'r') as PsiOut:
+        with open('tmp-psi4-'+str(ii)+'.out', 'r') as PsiOut:
             for line in PsiOut:
                 if line.startswith("        n-Body"):
                     PsiOut.readline()
@@ -123,3 +133,14 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
                             MBEOut.write("{} {} {}\n".format(line_sp[1],line_sp[2],line_sp[4]))
                         line_sp = PsiOut.readline().split()
                     MBEOut.write("\n")
+
+if DELETE_SCRATCH:
+    for f in glob.glob("tmp-psi4*"):
+        os.remove(f)
+
+end_time = datetime.datetime.now()
+
+with open(TIME_FILE, "w") as time_file:
+    time_file.write("Calculation begins on: {}\n".format(begin_time))
+    time_file.write("Calculation ends on: {}\n".format(end_time))
+    time_file.write("Calculation running time: {}".format(str(datetime.timedelta(seconds = (end_time - begin_time).total_seconds()))))
