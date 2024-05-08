@@ -10,6 +10,7 @@ Notes on the files:
 - geoms/water.xyz: model water molecular coordinates for more water cluster geometries generation.
 - geoms/W3_subgeoms_from_4_5.xyz: water trimer geometries as substructrures from W4_geoms_all.xyz and W5_geoms_all.xyz. Generated with sub_geom-gen.py.
 - geoms/3random_waters-100.xyz: water trimers randomly positioned and oriented in a 5 * 5 * 5 (angstrom) box. Generated with random_water-gen.py and water.xyz.
+- data_results/example-trimer-psi4-MBE.out: The Psi4 output file of an example trimer MBE calculation.
 - data_results/trimer_random_100-MBE.out: Psi4 MBE calculation results with the geometries in 3random_waters-100.xyz.
 - data_results/trimer_sub3f_4_5-230-MBE.out: Psi4 MBE calculation results with the geometries in W3_subgeoms_from_4_5.xyz.
 - data_results/trimer-rand100-MBE2-b3lyp_d3-631gdp.png: histogram plot of MBE (n = 2) errors calcuated using the results in trimer_random_100-MBE.out.
