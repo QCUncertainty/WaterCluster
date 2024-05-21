@@ -56,8 +56,6 @@ def random_point(a, b, c):
 # and with some random orientation
 def random_water(water0, a, b, c):
     pos = random_point(a, b, c)
-    # get the model water coordinates
-    #water0 = read_water_model(WaterFile)
     # rotate the water molecule with some random angles
     water = random_rot_water(water0)
     # move the O atom of the water molecule to the random position
@@ -101,18 +99,20 @@ def in_box(water, a, b, c):
 
 # settings
 WATER_FILE = 'water.xyz'
-M = 100 # no. of water cluster structures
+M = 1000 # no. of water cluster structures
 N = 3 # no. of water molecules in the box
-a = 5
-b = 5
-c = 5 # dimensions of the box, in angstrom
-OUTPUT = str(N)+'random_waters-'+str(M)+'.xyz'
+a = 3
+b = 3
+c = 3 # dimensions of the box, in angstrom
+OUTPUT = str(N)+'random_waters-'+str(M)+'-box'+str(a)+'.xyz'
 
 # generate the coordinates of N random water molecules
 water0 = read_water_model(WATER_FILE)
 
 # clean the output file before writing
 open(OUTPUT, 'w').close()
+
+kk = 1
 
 # run M times
 for jj in range(M):
@@ -145,8 +145,9 @@ for jj in range(M):
         for water in waters:
             if ii == 0:
                 WATER_out.write("{}\n".format(N*3))
-                WATER_out.write("{} randomly positioned water molecules in a {} * {} * {} box.\n".format(N,a,b,c))
+                WATER_out.write("{} randomly positioned water molecules in a {} * {} * {} box. No. {}.\n".format(N,a,b,c,kk))
                 ii = 1
+                kk += 1
             WATER_out.write("O {} {} {}\n".format(water[0,0], water[0,1], water[0,2]))
             WATER_out.write("H {} {} {}\n".format(water[1,0], water[1,1], water[1,2]))
             WATER_out.write("H {} {} {}\n".format(water[2,0], water[2,1], water[2,2]))

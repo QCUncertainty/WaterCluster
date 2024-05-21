@@ -5,20 +5,19 @@ import subprocess
 import os
 import datetime
 import glob
+import shutil
 
 DFT_METHOD = 'b3lyp'
 BASIS = '6-31G*'
 
 N = 3 # no. of monomers in the cluster, N <= 25 at this time
 #GEOM_FILE = 'W'+str(N)+'_geoms_all.xyz'
-GEOM_FILE = '3random_waters-100.xyz'
+#GEOM_FILE = '3random_waters-100.xyz'
 #GEOM_FILE = 'W3_subgeoms_from_4_5.xyz'
-#GEOM_FILE = 'W3-test.xyz'
-NAME_DECOR = "_random_"
-#NAME_DECOR = "_sub3f_4_5" # "-" is not allowed in Psi4 calculations
-#NAME_DECOR = "_test_"
-#NO_CLUSTERS = "230"
-NO_CLUSTERS = "100"
+GEOM_FILE = 'W3_subgeoms_from_6-1000.xyz'
+NAME_DECOR = "_sub3f6_1000_"
+#NAME_DECOR = "_sub3f_4_5_" # "-" is not allowed in Psi4 calculations
+NO_CLUSTERS = "1000"
 DELETE_SCRATCH = True # if false keeping the scratch files for debugging purpose
 TIME_FILE = "calc_timer.txt" # record the calculation time
 
@@ -100,7 +99,7 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
         with open('tmp-psi4-'+str(ii)+'.in', 'w') as PsiInp:
             PsiInp.write("molecule {} {{\n".format(CLUSTER_NAME))
             for j in range(0,row_length,4):
-                PsiInp.write("{} {} {} {}\n".format(geom[ii,j],geom[ii,j+1],geom[ii,j+2],geom[ii,j+3]))
+                PsiInp.write("{} {} {} {}\n".format(geom[ii,j],float(geom[ii,j+1]),float(geom[ii,j+2]),float(geom[ii,j+3])))
                 if ((j+4)%12 == 0 and ((j+4) < row_length)):
                     PsiInp.write("--\n")
             PsiInp.write("}\n")
@@ -116,7 +115,7 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
         subprocess.run(["psi4", 'tmp-psi4-'+str(ii)+'.in', 'tmp-psi4-'+str(ii)+'.out']) # run the Psi4 MBE calculation
 
         MBEOut.write("{}\n".format(label[ii]))
-
+        last_line = []
         with open('tmp-psi4-'+str(ii)+'.out', 'r') as PsiOut:
             for line in PsiOut:
                 if line.startswith("        n-Body"):
@@ -133,6 +132,10 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
                             MBEOut.write("{} {} {}\n".format(line_sp[1],line_sp[2],line_sp[4]))
                         line_sp = PsiOut.readline().split()
                     MBEOut.write("\n")
+                last_line = line
+# keep the not successful output files
+        if "successfully" not in last_line:
+            shutil.copyfile('tmp-psi4-'+str(ii)+'.out', 'tmp-psi4-'+str(ii)+'.err')
 
 if DELETE_SCRATCH:
     for f in glob.glob("tmp-psi4*"):
