@@ -8,6 +8,7 @@ Notes on the files:
 - scripts/err_distr.ipynb: jupyter notebook to analyze the MBE errors.
 - scripts/sp_dataset.ipynb: jupyter notebook to create a singlepoint energy calculation dataset.
 - scripts/mbe_dataset.ipynb: jupyter notebook to create a many-body expansion calculation dataset.
+- scripts/calc_err.py: python script to extract MBE energies from \*MBE.out and calculate errors relative to the full body energy.
 - geoms/Wn_geoms_all.xyz (n = 3 - 10): stacked xyz files of n-water clusters (n = 3 - 10). Structures are from the database at https://sites.uw.edu/wdbase/database-of-water-clusters/.
 - geoms/water.xyz: model water molecular coordinates for more water cluster geometries generation.
 - geoms/W3_subgeoms_from_4_5.xyz: water trimer geometries as substructrures from W4_geoms_all.xyz and W5_geoms_all.xyz. Generated with sub_geom-gen.py.
