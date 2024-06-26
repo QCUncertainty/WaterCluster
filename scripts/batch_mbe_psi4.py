@@ -14,10 +14,10 @@ N = 3 # no. of monomers in the cluster, N <= 25 at this time
 #GEOM_FILE = 'W'+str(N)+'_geoms_all.xyz'
 #GEOM_FILE = '3random_waters-100.xyz'
 #GEOM_FILE = 'W3_subgeoms_from_4_5.xyz'
-GEOM_FILE = 'W3_subgeoms_from_6-1000.xyz'
-NAME_DECOR = "_sub3f6_1000_"
+GEOM_FILE = '3random_waters-50-box5.xyz'
+NAME_DECOR = "_random_50_"
 #NAME_DECOR = "_sub3f_4_5_" # "-" is not allowed in Psi4 calculations
-NO_CLUSTERS = "1000"
+NO_CLUSTERS = "50"
 DELETE_SCRATCH = True # if false keeping the scratch files for debugging purpose
 TIME_FILE = "calc_timer.txt" # record the calculation time
 
@@ -138,7 +138,11 @@ with open(CLUSTER_NAME+'-MBE.out', 'w') as MBEOut:
             shutil.copyfile('tmp-psi4-'+str(ii)+'.out', 'tmp-psi4-'+str(ii)+'.err')
 
 if DELETE_SCRATCH:
-    for f in glob.glob("tmp-psi4*"):
+    for f in glob.glob("tmp-psi4*.in"):
+        os.remove(f)
+    for f in glob.glob("tmp-psi4*.out"):
+        os.remove(f)
+    for f in glob.glob("tmp-psi4*.log"):
         os.remove(f)
 
 end_time = datetime.datetime.now()

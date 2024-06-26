@@ -30,23 +30,28 @@ bond_angle = 104.5
 frac = 10
 
 N = 100 # no. of monomer geoms generated
+NAME_DECOR = "-train"
 
-OUTPUT_FILE = 'random_water_mono-'+str(N)+'.xyz'
+OUTPUT_FILE = 'random_water_mono-'+str(N)+NAME_DECOR+'.xyz'
+DESCR_FILE = 'random_water_mono-'+str(N)+NAME_DECOR+'-geom.dat'
 
 # END Settings
-with open(OUTPUT_FILE, "w") as OutFile:
-    for i in range(N):
-        OH1 = rd_normal(bond_length, frac)
-        OH2 = rd_normal(bond_length, frac)
-        HOH = rd_normal(bond_angle, frac)
-        coords = water_geom(OH1, OH2, HOH)
-        OutFile.write("3\n")
-        OutFile.write("random water geometry No. "+str(i+1)+"\n")
-        for j in range(3):
-            if j == 0:
-                OutFile.write("O    {}  {}  {}\n".format(coords[0][0], coords[0][1], coords[0][2]))
-            else:
-                OutFile.write("H    {}  {}  {}\n".format(coords[j][0], coords[j][1], coords[j][2]))
+
+with open(DESCR_FILE, "w") as DescrFile:
+    with open(OUTPUT_FILE, "w") as OutFile:
+        for i in range(N):
+            OH1 = rd_normal(bond_length, frac)
+            OH2 = rd_normal(bond_length, frac)
+            HOH = rd_normal(bond_angle, frac)
+            DescrFile.write("{}\t{}\t{}\n".format(OH1,OH2,HOH))
+            coords = water_geom(OH1, OH2, HOH)
+            OutFile.write("3\n")
+            OutFile.write("random water geometry No. "+str(i+1)+"\n")
+            for j in range(3):
+                if j == 0:
+                    OutFile.write("O    {}  {}  {}\n".format(coords[0][0], coords[0][1], coords[0][2]))
+                else:
+                    OutFile.write("H    {}  {}  {}\n".format(coords[j][0], coords[j][1], coords[j][2]))
     
 
 
