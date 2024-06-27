@@ -10,14 +10,16 @@ import shutil
 DFT_METHOD = 'b3lyp'
 BASIS = '6-31G*'
 
-N = 3 # no. of monomers in the cluster, N <= 25 at this time
+N = 2 # no. of monomers in the cluster, N <= 25 at this time
 #GEOM_FILE = 'W'+str(N)+'_geoms_all.xyz'
 #GEOM_FILE = '3random_waters-100.xyz'
 #GEOM_FILE = 'W3_subgeoms_from_4_5.xyz'
-GEOM_FILE = '3random_waters-50-box5.xyz'
-NAME_DECOR = "_random_50_"
+GEOM_FILE = 'randrand_2waters-1000-box3-train.xyz'
+#GEOM_FILE = 'debug.xyz'
+NAME_DECOR = "_randrand_train_"
+#NAME_DECOR = "_debug_"
 #NAME_DECOR = "_sub3f_4_5_" # "-" is not allowed in Psi4 calculations
-NO_CLUSTERS = "50"
+NO_CLUSTERS = "1000"
 DELETE_SCRATCH = True # if false keeping the scratch files for debugging purpose
 TIME_FILE = "calc_timer.txt" # record the calculation time
 
@@ -68,7 +70,7 @@ i = -1
 
 row_length = 12*N # no. of elements for a geom row of a structure
 
-geom_blank = [" "]*row_length
+geom_blank = [24*" "]*row_length # This string must be long enough to acommodate all the coordinate numbers in the geom file. Very important!
 geom = [geom_blank]
 
 j = 0

@@ -11,10 +11,10 @@ DFT_METHOD = 'b3lyp'
 BASIS = '6-31G*'
 
 N = 1
-GEOM_FILE = 'random_water_mono-1000-train.xyz'
-NAME_DECOR = "random_water_train_"
+GEOM_FILE = 'random_water_mono-20-test.xyz'
+NAME_DECOR = "random_water_test_"
 #NAME_DECOR = "_sub3f_4_5_" # "-" is not allowed in Psi4 calculations
-NO_MOLS = "1000"
+NO_MOLS = "20"
 DELETE_SCRATCH = True # if false keeping the scratch files for debugging purpose
 TIME_FILE = "calc_timer.txt" # record the calculation time
 
@@ -33,7 +33,7 @@ i = -1
 
 row_length = 12*N # no. of elements for a geom row of a structure
 
-geom_blank = [" "]*row_length
+geom_blank = [24*" "]*row_length # This string must be long enough to acommodate all the coordinate numbers in the geom file. Very important!
 geom = [geom_blank]
 
 j = 0
