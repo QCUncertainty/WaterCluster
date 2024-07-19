@@ -13,6 +13,7 @@ Notes on the files:
 - scripts/batch_sp_psi4.py: python script to batch run single point energy calculations with Psi4.
 - scripts/batch_dp_psi4.py: python script to batch run single point energy and dipole moment calculations with Psi4.
 - scripts/randrand_water_cluster-gen.py: python script to generate water clusters with different monomer geometries (bond lengths and angles normally distributed).
+- scripts/ACSF-t1.ipynb: jupyter notebook to build a neural network model to predict the energies of water clusters.
 - geoms/Wn_geoms_all.xyz (n = 3 - 10): stacked xyz files of n-water clusters (n = 3 - 10). Structures are from the database at https://sites.uw.edu/wdbase/database-of-water-clusters/.
 - geoms/water.xyz: model water molecular coordinates for more water cluster geometries generation.
 - geoms/W3_subgeoms_from_4_5.xyz: water trimer geometries as substructrures from W4_geoms_all.xyz and W5_geoms_all.xyz. Generated with sub_geom-gen.py.
@@ -22,3 +23,4 @@ Notes on the files:
 - data_results/trimer_sub3f_4_5-230-MBE.out: Psi4 MBE calculation results with the geometries in W3_subgeoms_from_4_5.xyz.
 - data_results/trimer-rand100-MBE2-b3lyp_d3-631gdp.png: histogram plot of MBE (n = 2) errors calcuated using the results in trimer_random_100-MBE.out.
 - data_results/trimer-subgeom3_f4_5-MBE2-b3lyp_d3-631gdp.png: histogram plot of MBE (n = 2) errors calcuated using the results in trimer_sub3f_4_5-230-MBE.out.
+- data_results/random_water_mono-1000-train.xyz,random_water_mono-20-test.xyz,random_water_test20-sp.dat,random_water_train_1000-sp.dat: training and testing geometry and total energies data files needed in scripts/ACSF-t1.ipynb.
