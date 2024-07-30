@@ -14,6 +14,7 @@ Notes on the files:
 - scripts/batch_dp_psi4.py: python script to batch run single point energy and dipole moment calculations with Psi4.
 - scripts/randrand_water_cluster-gen.py: python script to generate water clusters with different monomer geometries (bond lengths and angles normally distributed).
 - scripts/ACSF-t1.ipynb: jupyter notebook to build a neural network model to predict the energies of water clusters.
+- scripts/rand_select_geom.py: python script to randomly select a number of cluster structures from a cluster geometry file (stacked .xyz).
 - geoms/Wn_geoms_all.xyz (n = 3 - 10): stacked xyz files of n-water clusters (n = 3 - 10). Structures are from the database at https://sites.uw.edu/wdbase/database-of-water-clusters/.
 - geoms/water.xyz: model water molecular coordinates for more water cluster geometries generation.
 - geoms/W3_subgeoms_from_4_5.xyz: water trimer geometries as substructrures from W4_geoms_all.xyz and W5_geoms_all.xyz. Generated with sub_geom-gen.py.
