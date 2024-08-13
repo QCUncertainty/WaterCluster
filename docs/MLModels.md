@@ -22,13 +22,44 @@ We have two types of solutions to run the high throughput MBE calculations. One 
 2. **Server/Client solution**
    In the server/client solution, a QCFractal data server is set up to store and manage the calculation results. A QCFractal compute server is alsoe set up to handle the calculations. The user installs the QCArchive/QCFractal/QCManybody packages on his local machine and the local machine works as a client. In a MBE calculation task, the user first login to the data server and establish the data connection between the server and the calculation, then the user submits a job to the compute server. On a high-performance computer, the compute server ditributes the calculation tasks into different calculation nodes. When the calculations are done, the results are collected and stored in the data server for future reference and analysis. How to set up the compute server depends on the hardware/software environment of the specific computing resource used (Nova?), which is still under investigation (Dullitha). For a quick warm-up, please see the doc on [setting up the servers on a local machine](https://github.com/QCUncertainty/WaterCluster/blob/main/docs/QCFractal.md).
 
+Currently both Psi4 and QCManybody do not support total energy evaluations in truncated MBE calculations, so in order to evaluate the MBE errors one need to run separated single point energy calculations.
+
 
 ## ML Models on MBE Energies
+We want to design ML models to predict MBE energies as well as the uncertainty of the predictions. We think this MBE energy fitting task is similar to constructing ML-based potential energy surfaces (PES) [^Ref2] or force fields [^Ref3], hence we borrowed the frameworks of ML PES/force field models in this project. In this project we will focus on neural network (NN) and Gaussian process regression (GPR) models.
 
-### Descriptors
+### Molecular Structural Descriptors
+The first problem of designing such ML models is to find appropriate quantities to describe the molecular structures of the cluster systems, which are called descriptors. The raw atomic coordinates are not wise choices, since they are lack of translational, rotational and element permutational invariance, which makes the training of the ML models very inefficient. Like peopel did in building classical force fields, a set of natural candidates of molecular structural descriptors are internal coordinates, including bond lengths, bond angles, torsion angles, etc. Internal coordinates are efficient in building ML PES/force field models for small molecular systems. However, the number of internal coordinates increase rapidly as the size of the system grows. In addition, redundancy also gives difficulties in the training of the ML models.
+Researchers have already proposed many types of molecular structural descriptors [^Ref4]. For the easiness of implementation, we choose atomic-centered symmetry functions (ACSF) [^Ref5] [^Ref6] [^Ref7] as the descriptors in our ML models. We have developed Python scripts to evaluate such ACSFs in our studied water clusters (see the notebook https://github.com/QCUncertainty/WaterCluster/blob/main/scripts/ACSF-t1.ipynb). There are several parameters to define such ACSFs, and currently those parameters are not optimized for the water clusters. The ACSF parameters should be optimized and their performance in our models should be evaluated carefully.
 
 ### Neural Network (NN) Models
+Our NN model is similar to the one in [^Ref5] [^Ref6]. We want to note that this type of NN models are **NOT** typical feed-forward neural networks. Suppose the fitting target is the MBE energy of the system truncated at some order, the MBE energy is decomposed into atomic contributions. Each atom in the cluster system contributes to the total MBE energy, and the sum of these atomic contributions makes the total MBE energy. Only the atomic contributions are described by typical feed-forward neural networks. Atoms of the same element in the system share the same atomic NN (same weights and biases). Of course, the inputs to the atomic NN of differnt atoms are different.
+
+We have developed Python scripts to train the NN model using the Pytoch package (please see https://github.com/QCUncertainty/WaterCluster/blob/main/scripts/MBE-ACSF.ipynb). The training process do not converge straightforwardly. Usually changing the learning rate adaptively is necessary to obtain a good fit.
+
+Models for MBE energies truncated at different orders can be trained by transfer learning. For example, in order to fit the NN model to MBE energy truncated at order 3, one can read in the parameters from the trained NN model for MBE energy truncated at order 2. Usually this transfer learning trick saves a lot of training time.
+
+In order to obtain NN models to predict the uncertainty of MBE energies, we adopt the idea in the article at https://medium.com/@steve_thorn/predicting-uncertainty-with-neural-networks-aec0217eb37d: the variance of each MBE energy prediction is calcualted and then a new NN model is trained to fit these variances. However, the training process is difficult (why?) .
+
 
 ### Gaussian Process Regression (GPR) Models
 
-[^Ref1]: Avijit Rakshit and Pradipta Bandyopadhyay, Joseph P. Heindel and Sotiris S. Xantheas “Atlas of putative minima and low-lying energy networks of water clusters n=3-25”, *J. Chem. Phys.* **151**, 214307 (2019).
+
+
+
+[^Ref1]: Avijit Rakshit and Pradipta Bandyopadhyay, Joseph P. Heindel and Sotiris S. Xantheas, “Atlas of putative minima and low-lying energy networks of water clusters n=3-25”, *J. Chem. Phys.* **151**, 214307 (2019).
+
+[^Ref2]: Jörg Behler, "Four Generations of High-Dimensional Neural Network Potentials", *Chem. Rev.* **121**, 10037 (2021).
+
+[^Ref3]: Oliver T. Unke, Stefan Chmiela, Huziel E. Sauceda, Michael Gastegger, Igor Poltavsky, Kristof T. Schütt, Alexandre Tkatchenko, and Klaus-Robert Müller, "Machine Learning Force Fields", *Chem. Rev.* **121**, 10142 (2021).
+
+[^Ref4]: Felix Musil, Andrea Grisaﬁ, Albert P. Bartók, Christoph Ortner, Gábor Csányi, and Michele Ceriotti, "Physics-Inspired Structural Representations for Molecules and Materials", *Chem. Rev.* **121**, 9759 (2021).
+
+[^Ref5]: Jörg Behler and Michele Parrinello, "Generalized Neural-Network Representation of High-Dimensional Potential-Energy Surfaces", *Phys. Rev. Lett.* **98**, 146401 (2007).
+
+[^Ref6]: Jörg Behler, "Atom-centered symmetry functions for constructing high-dimensional neural network potentials", *J. Chem. Phys.* **134**, 074106 (2011).
+
+[^Ref7]: Alea Miako Tokita and Jörg Behler, "How to train a neural network potential", *J. Chem. Phys.* **159**, 121501 (2023).
+
+
+ 
