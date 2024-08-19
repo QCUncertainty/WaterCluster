@@ -51,6 +51,14 @@ We follow the design in the publication [^Ref9], in which a GPR model for intera
 
 Currently there are still difficulties hindering the running of the GAP code (official examples do not run on our local machine). Our plan is to modify the GAP code to use ACSFs as inputs, and then predict the MBE energies as well as their uncertainty.
 
+## Next Steps
+In the future, the following steps can be taken to finish/improve our ML models:
+
+1. Improving descriptors. The parameters of ACSFs can be optimized for our water clusters. Other types of descriptors such as the Smooth Overlap of Atomic Positions (SAOP) descriptor [^Ref11] can be tested and compared to ACSF. We can also design our own geometrical descriptors for general molecular clusters using the dipole and multipole tensors (details to be documented).
+2. Refining the NN model. The structure of the NN can be refined to find the best number of layers and number of units in each layers balanced in computational cost and accuracy. In addition to the simple variance prediction approach, we can also explore other methods to learn the prediction error of an NN model.
+3. Finish the GPR model and compare its performance with the NN model.
+4. Establishing the protocol of high throughput big data generation and ML learning model building on high-performance computing (HPC) facilities. We have build a machinery on our local machine for the big data generation and ML learning model training tasks, the next step is to do the same things more efficiently on a supercomputer.
+
 
 [^Ref1]: Avijit Rakshit and Pradipta Bandyopadhyay, Joseph P. Heindel and Sotiris S. Xantheas, “Atlas of putative minima and low-lying energy networks of water clusters n=3-25”, *J. Chem. Phys.* **151**, 214307 (2019).
 
@@ -71,4 +79,6 @@ Currently there are still difficulties hindering the running of the GAP code (of
 [^Ref9]: Albert P. Bartók, Mike C. Payne, Risi Kondor, and Gábor Csányi, "Gaussian Approximation Potentials: The Accuracy of Quantum Mechanics, without the Electrons", *Phys. Rev. Lett.* **104**, 136403 (2010).
 
 [^Ref10]: Carl Edward Rasmussen and Christopher K. I. Williams, "Gaussian Processes for Machine Learning", The MIT Press, 2006. 
+
+[^Ref11]: Albert P. Bartók, Risi Kondor, and Gábor Csányi, “On representing chemical environments”, *Phys. Rev. B* **87**, 184115 (2013).
  
