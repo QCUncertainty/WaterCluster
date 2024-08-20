@@ -15,13 +15,18 @@ Notes on the files:
 - scripts/randrand_water_cluster-gen.py: python script to generate water clusters with different monomer geometries (bond lengths and angles normally distributed).
 - scripts/ACSF-t1.ipynb: jupyter notebook to build a neural network model to predict the energies of water clusters.
 - scripts/rand_select_geom.py: python script to randomly select a number of cluster structures from a cluster geometry file (stacked .xyz).
+- scripts/MBE-ACSF-mixed_fit.ipynb: jupyter notebook to fit the NN model to the MBE_3 energies of 1000 mixed water pentamer samples (500 random + 500 reference).
 - geoms/Wn_geoms_all.xyz (n = 3 - 10): stacked xyz files of n-water clusters (n = 3 - 10). Structures are from the database at https://sites.uw.edu/wdbase/database-of-water-clusters/.
 - geoms/water.xyz: model water molecular coordinates for more water cluster geometries generation.
 - geoms/W3_subgeoms_from_4_5.xyz: water trimer geometries as substructrures from W4_geoms_all.xyz and W5_geoms_all.xyz. Generated with sub_geom-gen.py.
 - geoms/3random_waters-100.xyz: water trimers randomly positioned and oriented in a 5 * 5 * 5 (angstrom) box. Generated with random_water-gen.py and water.xyz.
+- geoms/random_water_mono-1000-train.xyz,random_water_mono-20-test.xyz: training and testing geometry data files needed in scripts/ACSF-t1.ipynb.
+- geoms/W5_mixed_box5_sub5f7-1000-train.xyz: structures of 1000 mixed water pentamer samples (500 random + 500 reference).
 - data_results/example-trimer-psi4-MBE.out: The Psi4 output file of an example trimer MBE calculation.
 - data_results/trimer_random_100-MBE.out: Psi4 MBE calculation results with the geometries in 3random_waters-100.xyz.
 - data_results/trimer_sub3f_4_5-230-MBE.out: Psi4 MBE calculation results with the geometries in W3_subgeoms_from_4_5.xyz.
 - data_results/trimer-rand100-MBE2-b3lyp_d3-631gdp.png: histogram plot of MBE (n = 2) errors calcuated using the results in trimer_random_100-MBE.out.
 - data_results/trimer-subgeom3_f4_5-MBE2-b3lyp_d3-631gdp.png: histogram plot of MBE (n = 2) errors calcuated using the results in trimer_sub3f_4_5-230-MBE.out.
-- data_results/random_water_mono-1000-train.xyz,random_water_mono-20-test.xyz,random_water_test20-sp.dat,random_water_train_1000-sp.dat: training and testing geometry and total energies data files needed in scripts/ACSF-t1.ipynb.
+- data_results/random_water_test20-sp.dat,random_water_train_1000-sp.dat: testing and training total energies data files needed in scripts/ACSF-t1.ipynb.
+- data_results/NN-5water-mixed-MBE3-tmp.pkl: the pickle file to store the NN model fitted to the MBE_3 energies of 1000 mixed water pentamer samples (500 random + 500 reference).
+- data_results/pentamer_W5_test_19-MBE.dat,pentamer_mixed_train_1000-MBE.dat: testing and training MBE_3 energy data files needed in scripts/MBE-ACSF-mixed_fit.ipynb. 
