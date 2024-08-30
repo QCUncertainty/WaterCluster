@@ -23,12 +23,19 @@ def rd_normal(center, frac):
     sigma = center * frac/300.0
     return np.random.normal(loc=center, scale=sigma)
 
-# generate one water molecule with normally distributed bond lengths
-# and bond angle
-def one_water_gen(bl_ref, ba_ref, frac):
-    OH1 = rd_normal(bl_ref, frac)
-    OH2 = rd_normal(bl_ref, frac)
-    HOH = rd_normal(ba_ref, frac)
+# generate one water molecule with uniformly (rd_opt = 1) or 
+# normally distributed (rd_opt = 2) bond lengths and bond angle
+def one_water_gen(bl_ref, ba_ref, frac, rd_opt=1):
+    if rd_opt == 1:
+        OH1 = np.random.uniform(bl_ref*(1.0 - frac/100.0), bl_ref*(1.0 + frac/100.0))
+        OH2 = np.random.uniform(bl_ref*(1.0 - frac/100.0), bl_ref*(1.0 + frac/100.0))
+        HOH = np.random.uniform(ba_ref*(1.0 - frac/100.0), ba_ref*(1.0 + frac/100.0))
+    elif rd_opt == 2:
+        OH1 = rd_normal(bl_ref, frac)
+        OH2 = rd_normal(bl_ref, frac)
+        HOH = rd_normal(ba_ref, frac)
+    else:
+        raise Exception("Wrong random option in water molecule generation!")
     return OH1, OH2, HOH, water_geom(OH1, OH2, HOH)
 
 # random rotation matrix
@@ -111,14 +118,14 @@ def in_box(water, a, b, c):
 
 # Settings
 #WATER_FILE = 'water.xyz'
-M = 100 # no. of water cluster structures
-N = 2 # no. of water molecules in the box
-a = 3
-b = 3
-c = 3 # dimensions of the box, in angstrom
-NAME_DECOR = '-test'
-MONO_GEOM_FILE = 'randrand_'+str(N)+'waters-'+str(M)+'-box'+str(a)+NAME_DECOR+'-monogeom.dat'
-OUTPUT = 'randrand_'+str(N)+'waters-'+str(M)+'-box'+str(a)+NAME_DECOR+'.xyz'
+M = 1000 # no. of water cluster structures
+N = 5 # no. of water molecules in the box
+a = 5
+b = 5
+c = 5 # dimensions of the box, in angstrom
+NAME_DECOR = '-train'
+MONO_GEOM_FILE = 'rand_uni_'+str(N)+'waters-'+str(M)+'-box'+str(a)+NAME_DECOR+'-monogeom.dat'
+OUTPUT = 'rand_uni_'+str(N)+'waters-'+str(M)+'-box'+str(a)+NAME_DECOR+'.xyz'
 
 bond_length_ref = 0.9572
 bond_angle_ref = 104.5
